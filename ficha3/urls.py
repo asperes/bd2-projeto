@@ -21,5 +21,7 @@ from . import views
 
 urlpatterns = [
     path('artistas/', views.artistas, name='artistas'),
+    path('artistas/add/', views.artistas_add, name='artistas_add'),
+
     path('generos_artistas/', views.generos_artistas, name='generos_artistas')
 ]
