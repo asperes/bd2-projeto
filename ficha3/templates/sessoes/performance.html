@@ -1,0 +1,46 @@
+{% extends 'base_generic.html' %}
+{% block title %}Performance{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg">
+    <h1 class="text-4xl font-bold text-center mb-6 text-blue-600">Performance</h1>
+    <form method="POST" action="{% url 'performance_add' %}">
+        {% csrf_token %}
+        <div class="flex space-x-4 mb-4">
+            <select name="artista" class="border border-gray-300 px-4 py-2 rounded" required>
+                <option value="">Selecione Artista</option>
+                {% for artista in artistas %}
+                <option value="{{ artista.id }}">{{ artista.nome }}</option>
+                {% endfor %}
+            </select>
+            <select name="sessao" class="border border-gray-300 px-4 py-2 rounded" required>
+                <option value="">Selecione Sessão</option>
+                {% for sessao in sessoes %}
+                <option value="{{ sessao.id }}">{{ sessao.evento.titulo }} em {{ sessao.local }} ({{ sessao.inicio|date:"d/m/Y H:i" }} - {{ sessao.fim|date:"d/m/Y H:i" }})</option>
+                {% endfor %}
+            </select>
+            
+        </div>
+        <div class="mb-4">
+            <input type="number" name="duracao" placeholder="Duração (min)" class="border border-gray-300 px-4 py-2 rounded" required>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Adicionar</button>
+        </div>
+    </form>
+    <table class="min-w-full bg-white border border-gray-300">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="py-2 px-4 border-b">Artista</th>
+                <th class="py-2 px-4 border-b">Sessão</th>
+                <th class="py-2 px-4 border-b">Duração (min)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for performance in performances %}
+            <tr class="hover:bg-gray-50">
+                <td class="py-2 px-4 border-b">{{ performance.artista.nome }}</td>
+                <td class="py-2 px-4 border-b">{{ performance.sessao.evento.titulo }} em {{ performance.sessao.local }} ({{ performance.sessao.inicio|date:"d/m/Y H:i" }} - {{ performance.sessao.fim|date:"d/m/Y H:i" }})</td>
+                <td class="py-2 px-4 border-b">{{ performance.duracao_estim }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+</div>
+{% endblock %}

@@ -23,5 +23,13 @@ urlpatterns = [
     path('artistas/', views.artistas, name='artistas'),
     path('artistas/add/', views.artistas_add, name='artistas_add'),
 
-    path('generos_artistas/', views.generos_artistas, name='generos_artistas')
+    path('generos_artistas/', views.generos_artistas, name='generos_artistas'),
+    path('generos_artistas/add/', views.generos_artistas_add, name='generos_artistas_add'),
+
+    path('sessoes/', views.sessoes, name='sessoes'),
+    path('sessoes/add/', views.sessoes_add, name='sessoes_add'),
+    path('performance/', views.performance, name='performance'),
+    path('performance/add/', views.performance_add, name='performance_add'),
+    
+
 ]
