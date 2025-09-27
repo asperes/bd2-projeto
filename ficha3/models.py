@@ -1,4 +1,7 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+import uuid
+from decimal import Decimal
 
 # Create your models here.
 class Organizador(models.Model):
@@ -82,6 +85,11 @@ class Fatura(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=2)
     estado = models.CharField(max_length=1, choices=ESTADO_CHOICES)
 
+    def save(self, *args, **kwargs):
+        if not self.numero_unico:
+            self.numero_unico = str(uuid.uuid4())
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.numero_unico
 
@@ -101,6 +109,24 @@ class Bilhete(models.Model):
     comprado_em = models.DateTimeField(auto_now_add=True)
     preco_final = models.DecimalField(max_digits=8, decimal_places=2)
     lugar = models.CharField(max_length=20)
+
+    def display_label(self):
+        return f"{self.sessao.evento.titulo} — {self.get_tipo_display()} — {self.preco_final}€ — Lugar: {self.lugar}"
+
+    def save(self, *args, **kwargs):
+        if not self.codigo_unico:
+            self.codigo_unico = str(uuid.uuid4())
+        if not self.preco_final:
+            tipo_multipliers = {
+                'NORMAL': Decimal('1.0'),
+                'ESTUDANTE': Decimal('0.7'),
+                'SENIOR': Decimal('0.8'),
+                'VIP': Decimal('1.5'),
+                'CRIANCA': Decimal('0.5'),
+            }
+            multiplier = tipo_multipliers.get(self.tipo, Decimal('1.0'))
+            self.preco_final = self.sessao.preco * multiplier
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.codigo_unico
@@ -123,3 +149,18 @@ class Avaliacao(models.Model):
 
     def __str__(self):
         return f"Avaliação {self.nota} por {self.cliente.nome}"
+
+class FaturasItem(models.Model):
+    fatura = models.ForeignKey(Fatura, on_delete=models.CASCADE, related_name='itens')
+    bilhete = models.OneToOneField(Bilhete, on_delete=models.CASCADE, related_name='fatura_item')
+
+    def __str__(self):
+        return f"Item {self.bilhete} na {self.fatura}"
+
+    def clean(self):
+        if self.fatura.cliente != self.bilhete.cliente:
+            raise ValidationError("O bilhete deve pertencer ao mesmo cliente da fatura.")
+
+    class Meta:
+        verbose_name = "Item da Fatura"
+        verbose_name_plural = "Itens da Fatura"

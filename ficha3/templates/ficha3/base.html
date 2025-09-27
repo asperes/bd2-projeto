@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bilheteira{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-8">
+                    <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Bilheteira</h1>
+                    <a href="{% url 'fatura_list' %}" class="text-gray-600 hover:text-blue-600 px-2 py-1 rounded transition font-medium">Faturas</a>
+                    <a href="{% url 'bilhete_list' %}" class="text-gray-600 hover:text-blue-600 px-2 py-1 rounded transition font-medium">Bilhetes</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main class="max-w-5xl mx-auto py-10 px-4">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
