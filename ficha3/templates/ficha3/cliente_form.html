@@ -1,0 +1,97 @@
+{% extends 'ficha3/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>{{ title }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nome.id_for_label }}" class="form-label">
+                                {{ form.nome.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.nome }}
+                            {% if form.nome.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.nome.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                {{ form.email.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.email.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.telefone.id_for_label }}" class="form-label">
+                                {{ form.telefone.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.telefone }}
+                            {% if form.telefone.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.telefone.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.morada.id_for_label }}" class="form-label">
+                            {{ form.morada.label }} <span class="text-danger">*</span>
+                        </label>
+                        {{ form.morada }}
+                        {% if form.morada.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.morada.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'cliente_list' %}" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times me-1"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Guardar Cliente
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="alert alert-info mt-3">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Nota:</strong> Este formulário utiliza o procedimento SQL <code>inserir_cliente()</code> 
+            para validar e inserir os dados na base de dados.
+        </div>
+    </div>
+</div>
+{% endblock %}

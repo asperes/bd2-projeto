@@ -1,0 +1,76 @@
+{% extends 'ficha3/base.html' %}
+
+{% block title %}Lista de Clientes{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-users me-2"></i>Lista de Clientes</h1>
+    <a href="{% url 'cliente_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i>Novo Cliente
+    </a>
+</div>
+
+{% if clientes %}
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Telefone</th>
+                            <th>Morada</th>
+                            <th>Data Registo</th>
+                            <th>Dias</th>
+                            <th>Bilhetes</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cliente in clientes %}
+                        <tr>
+                            <td><strong>{{ cliente.id }}</strong></td>
+                            <td>
+                                <a href="{% url 'cliente_detail' cliente.id %}" class="text-decoration-none">
+                                    {{ cliente.nome }}
+                                </a>
+                            </td>
+                            <td>{{ cliente.email }}</td>
+                            <td>{{ cliente.telefone }}</td>
+                            <td>{{ cliente.morada_resumida }}</td>
+                            <td>{{ cliente.data_registo|date:"d/m/Y" }}</td>
+                            <td>
+                                <span class="badge bg-info">{{ cliente.dias_desde_registo }} dias</span>
+                            </td>
+                            <td>
+                                {% if cliente.total_bilhetes %}
+                                    <span class="badge bg-success">{{ cliente.total_bilhetes }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">0</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'cliente_detail' cliente.id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-info text-center">
+        <i class="fas fa-info-circle me-2"></i>
+        Ainda não existem clientes registados.
+        <br><br>
+        <a href="{% url 'cliente_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Criar Primeiro Cliente
+        </a>
+    </div>
+{% endif %}
+{% endblock %}

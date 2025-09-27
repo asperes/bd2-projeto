@@ -1,0 +1,107 @@
+{% extends 'ficha3/base.html' %}
+
+{% block title %}Início - Sistema de Bilheteira{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="jumbotron bg-primary text-white p-5 rounded mb-4">
+            <h1 class="display-4">
+                <i class="fas fa-ticket-alt me-3"></i>
+                Sistema de Bilheteira
+            </h1>
+            <p class="lead">
+                Gestão de clientes e locais para eventos - Ficha 3 de Bases de Dados II
+            </p>
+            <hr class="my-4" style="border-color: rgba(255,255,255,0.3);">
+            <p>
+                Sistema desenvolvido em Django com PostgreSQL, utilizando procedimentos armazenados e vistas SQL.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Estatísticas Rápidas -->
+    <div class="col-md-6 mb-4">
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <i class="fas fa-users me-2"></i>Clientes
+            </div>
+            <div class="card-body">
+                <h2 class="card-title text-primary">{{ total_clientes }}</h2>
+                <p class="card-text">Total de clientes registados no sistema</p>
+                <div class="d-grid gap-2 d-md-flex">
+                    <a href="{% url 'cliente_list' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-list me-1"></i>Ver Lista
+                    </a>
+                    <a href="{% url 'cliente_create' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Novo Cliente
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card border-success">
+            <div class="card-header bg-success text-white">
+                <i class="fas fa-map-marker-alt me-2"></i>Locais
+            </div>
+            <div class="card-body">
+                <h2 class="card-title text-success">{{ total_locais }}</h2>
+                <p class="card-text">Total de locais disponíveis para eventos</p>
+                <div class="d-grid gap-2 d-md-flex">
+                    <a href="{% url 'local_list' %}" class="btn btn-outline-success">
+                        <i class="fas fa-list me-1"></i>Ver Lista
+                    </a>
+                    <a href="{% url 'local_create' %}" class="btn btn-success">
+                        <i class="fas fa-plus me-1"></i>Novo Local
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-info-circle me-2"></i>Funcionalidades Implementadas
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-database text-primary me-2"></i>Base de Dados</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Tabelas Cliente e Local criadas</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Procedimentos SQL para inserção</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Vistas SQL com estatísticas</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-globe text-success me-2"></i>Interface Web</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Listagem de dados com paginação</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Formulários de inserção</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Páginas de detalhes</li>
+                            <li><i class="fas fa-check text-success me-2"></i>API JSON disponível</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="fas fa-lightbulb me-2"></i>
+            <strong>Dica:</strong> Use os procedimentos SQL para inserir dados através das vistas criadas, 
+            garantindo validação e consistência dos dados.
+        </div>
+    </div>
+</div>
+{% endblock %}
