@@ -14,12 +14,19 @@
     </div>
     
     
-    <ul class="space-y-4">
-        {% for genero in generos %}
-            <li class="bg-green-50 p-4 rounded-md border-l-4 border-green-500">
-                <span class="font-semibold text-lg">{{ genero.nome }}</span>
-            </li>
-        {% endfor %}
-    </ul>
+    <table class="min-w-full bg-white border border-gray-300">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="py-2 px-4 border-b">Nome</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for genero in generos %}
+            <tr class="hover:bg-gray-50">
+                <td class="py-2 px-4 border-b">{{ genero.nome }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
