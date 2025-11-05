@@ -1,0 +1,148 @@
+{% extends 'ficha3/base.html' %}
+
+{% block title %}{{ cliente.nome }} - Detalhes{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-user me-2"></i>{{ cliente.nome }}</h1>
+    <a href="{% url 'cliente_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-1"></i>Voltar à Lista
+    </a>
+</div>
+
+<div class="row">
+    <!-- Informações do Cliente -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <i class="fas fa-info-circle me-2"></i>Informações Pessoais
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">ID:</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge bg-secondary">{{ cliente.id }}</span>
+                    </dd>
+                    
+                    <dt class="col-sm-4">Nome:</dt>
+                    <dd class="col-sm-8">{{ cliente.nome }}</dd>
+                    
+                    <dt class="col-sm-4">Email:</dt>
+                    <dd class="col-sm-8">
+                        <a href="mailto:{{ cliente.email }}" class="text-decoration-none">
+                            <i class="fas fa-envelope me-1"></i>{{ cliente.email }}
+                        </a>
+                    </dd>
+                    
+                    <dt class="col-sm-4">Telefone:</dt>
+                    <dd class="col-sm-8">
+                        <a href="tel:{{ cliente.telefone }}" class="text-decoration-none">
+                            <i class="fas fa-phone me-1"></i>{{ cliente.telefone }}
+                        </a>
+                    </dd>
+                    
+                    <dt class="col-sm-4">Morada:</dt>
+                    <dd class="col-sm-8">
+                        <i class="fas fa-map-marker-alt me-1"></i>{{ cliente.morada }}
+                    </dd>
+                    
+                    <dt class="col-sm-4">Registado em:</dt>
+                    <dd class="col-sm-8">
+                        <i class="fas fa-calendar me-1"></i>
+                        {{ cliente.data_registo|date:"d/m/Y H:i" }}
+                        <br>
+                        <small class="text-muted">
+                            há {{ cliente.data_registo|timesince }}
+                        </small>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Estatísticas -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <i class="fas fa-chart-bar me-2"></i>Estatísticas
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h3 class="text-primary">{{ bilhetes|length }}</h3>
+                        <p class="text-muted mb-0">Bilhetes<br>Comprados</p>
+                    </div>
+                    <div class="col-6">
+                        <h3 class="text-success">
+                            {% if bilhetes %}
+                                {{ bilhetes|length }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        </h3>
+                        <p class="text-muted mb-0">Eventos<br>Assistidos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bilhetes do Cliente -->
+{% if bilhetes %}
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-ticket-alt me-2"></i>Bilhetes Comprados
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Evento</th>
+                        <th>Local</th>
+                        <th>Data/Hora</th>
+                        <th>Tipo</th>
+                        <th>Preço</th>
+                        <th>Lugar</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bilhete in bilhetes %}
+                    <tr>
+                        <td><code>{{ bilhete.codigo_unico }}</code></td>
+                        <td>{{ bilhete.sessao.evento.titulo }}</td>
+                        <td>{{ bilhete.sessao.local.nome }}</td>
+                        <td>{{ bilhete.sessao.inicio|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <span class="badge bg-info">{{ bilhete.get_tipo_display }}</span>
+                        </td>
+                        <td>{{ bilhete.preco_final }}€</td>
+                        <td>{{ bilhete.lugar }}</td>
+                        <td>
+                            {% if bilhete.usado %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check me-1"></i>Usado
+                                </span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-clock me-1"></i>Por usar
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info text-center">
+    <i class="fas fa-info-circle me-2"></i>
+    Este cliente ainda não comprou bilhetes.
+</div>
+{% endif %}
+{% endblock %}

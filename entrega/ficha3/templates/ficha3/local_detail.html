@@ -1,0 +1,161 @@
+{% extends 'ficha3/base.html' %}
+
+{% block title %}{{ local.nome }} - Detalhes{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-map-marker-alt me-2"></i>{{ local.nome }}</h1>
+    <a href="{% url 'local_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-1"></i>Voltar à Lista
+    </a>
+</div>
+
+<div class="row">
+    <!-- Informações do Local -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <i class="fas fa-info-circle me-2"></i>Informações do Local
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">ID:</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge bg-secondary">{{ local.id }}</span>
+                    </dd>
+                    
+                    <dt class="col-sm-4">Nome:</dt>
+                    <dd class="col-sm-8">{{ local.nome }}</dd>
+                    
+                    <dt class="col-sm-4">Morada:</dt>
+                    <dd class="col-sm-8">
+                        <i class="fas fa-map-marker-alt me-1"></i>{{ local.morada }}
+                    </dd>
+                    
+                    <dt class="col-sm-4">Capacidade:</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge bg-primary">{{ local.capacidade }} lugares</span>
+                        {% if local.capacidade < 100 %}
+                            <span class="badge bg-secondary ms-1">Pequeno</span>
+                        {% elif local.capacidade < 500 %}
+                            <span class="badge bg-primary ms-1">Médio</span>
+                        {% elif local.capacidade < 1000 %}
+                            <span class="badge bg-warning text-dark ms-1">Grande</span>
+                        {% else %}
+                            <span class="badge bg-danger ms-1">Muito Grande</span>
+                        {% endif %}
+                    </dd>
+                    
+                    <dt class="col-sm-4">Contacto:</dt>
+                    <dd class="col-sm-8">
+                        {% if '@' in local.contacto %}
+                            <a href="mailto:{{ local.contacto }}" class="text-decoration-none">
+                                <i class="fas fa-envelope me-1"></i>{{ local.contacto }}
+                            </a>
+                        {% else %}
+                            <a href="tel:{{ local.contacto }}" class="text-decoration-none">
+                                <i class="fas fa-phone me-1"></i>{{ local.contacto }}
+                            </a>
+                        {% endif %}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Estatísticas -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <i class="fas fa-chart-bar me-2"></i>Estatísticas de Utilização
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <h3 class="text-primary">{{ sessoes|length }}</h3>
+                        <p class="text-muted mb-0">Sessões<br>Realizadas</p>
+                    </div>
+                    <div class="col-4">
+                        <h3 class="text-success">
+                            {% with futuras=sessoes|length %}
+                                {{ futuras }}
+                            {% endwith %}
+                        </h3>
+                        <p class="text-muted mb-0">Sessões<br>Futuras</p>
+                    </div>
+                    <div class="col-4">
+                        <h3 class="text-warning">
+                            {% if local.capacidade %}
+                                {% widthratio local.capacidade 1 100 %}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </h3>
+                        <p class="text-muted mb-0">Taxa de<br>Ocupação</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sessões Recentes -->
+{% if sessoes %}
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-calendar-alt me-2"></i>Sessões Recentes ({{ sessoes|length }})
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Evento</th>
+                        <th>Data/Hora Início</th>
+                        <th>Data/Hora Fim</th>
+                        <th>Preço</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sessao in sessoes %}
+                    <tr>
+                        <td>
+                            <strong>{{ sessao.evento.titulo }}</strong>
+                            {% if sessao.evento.categoria %}
+                                <br><small class="text-muted">{{ sessao.evento.categoria.nome }}</small>
+                            {% endif %}
+                        </td>
+                        <td>{{ sessao.inicio|date:"d/m/Y H:i" }}</td>
+                        <td>{{ sessao.fim|date:"d/m/Y H:i" }}</td>
+                        <td>{{ sessao.preco }}€</td>
+                        <td>
+                            {% now "Y-m-d H:i:s" as now %}
+                            {% if sessao.inicio|date:"Y-m-d H:i:s" > now %}
+                                <span class="badge bg-primary">
+                                    <i class="fas fa-clock me-1"></i>Agendada
+                                </span>
+                            {% elif sessao.fim|date:"Y-m-d H:i:s" > now %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-play me-1"></i>Em curso
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">
+                                    <i class="fas fa-check me-1"></i>Finalizada
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info text-center">
+    <i class="fas fa-info-circle me-2"></i>
+    Este local ainda não tem sessões programadas.
+</div>
+{% endif %}
+{% endblock %}
