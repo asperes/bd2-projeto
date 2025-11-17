@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     #'ficha3.apps.Ficha3Config'
     'utilizadores',
+    'eventos',
 ]
 
 MIDDLEWARE = [
