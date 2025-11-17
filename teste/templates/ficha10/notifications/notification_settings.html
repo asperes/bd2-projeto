@@ -1,0 +1,44 @@
+{% extends 'ficha10/base.html' %}
+{% block title %}Configurações de Notificações{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold mb-8"><i class="fas fa-cog mr-2 text-purple-600"></i>Configurações de Notificações</h1>
+    
+    <div class="bg-white rounded-lg shadow-md p-8">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-semibold">Email</h3>
+                    <p class="text-sm text-gray-600">Receber notificações por email</p>
+                </div>
+                <input type="checkbox" name="email" {% if user.notification_preferences.email %}checked{% endif %} class="w-6 h-6">
+            </div>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-semibold">Push</h3>
+                    <p class="text-sm text-gray-600">Notificações push no navegador</p>
+                </div>
+                <input type="checkbox" name="push" {% if user.notification_preferences.push %}checked{% endif %} class="w-6 h-6">
+            </div>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-semibold">SMS</h3>
+                    <p class="text-sm text-gray-600">Receber SMS (opcional)</p>
+                </div>
+                <input type="checkbox" name="sms" {% if user.notification_preferences.sms %}checked{% endif %} class="w-6 h-6">
+            </div>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-semibold">In-App</h3>
+                    <p class="text-sm text-gray-600">Notificações dentro da aplicação</p>
+                </div>
+                <input type="checkbox" name="in_app" {% if user.notification_preferences.in_app %}checked{% endif %} class="w-6 h-6">
+            </div>
+            <button type="submit" class="w-full px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                <i class="fas fa-save mr-2"></i>Guardar Preferências
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

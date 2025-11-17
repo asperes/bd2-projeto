@@ -1,0 +1,123 @@
+{% extends 'ficha10/base.html' %}
+
+{% block title %}Pedidos de Amizade - Social Event Platform{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">
+            <i class="fas fa-user-plus mr-2 text-blue-600"></i>
+            Pedidos de Amizade
+        </h1>
+        <p class="mt-2 text-gray-600">Gerencie os seus pedidos de amizade</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Received Requests -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-inbox mr-2 text-green-600"></i>
+                Pedidos Recebidos ({{ received_requests|length }})
+            </h2>
+            
+            {% if received_requests %}
+            <div class="space-y-4">
+                {% for friendship in received_requests %}
+                <div class="border rounded-lg p-4 hover:shadow-md transition">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0">
+                                {% if friendship.user_id_1.profile_picture_url %}
+                                <img class="h-12 w-12 rounded-full object-cover" src="{{ friendship.user_id_1.profile_picture_url }}" alt="{{ friendship.user_id_1.username }}">
+                                {% else %}
+                                <div class="h-12 w-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                                    {{ friendship.user_id_1.username.0|upper }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <a href="{% url 'ficha10:user_profile' friendship.user_id_1.user_id %}" class="font-semibold text-gray-900 hover:text-blue-600">
+                                    {{ friendship.user_id_1.first_name }} {{ friendship.user_id_1.last_name }}
+                                </a>
+                                <p class="text-gray-600 text-sm">@{{ friendship.user_id_1.username }}</p>
+                                <p class="text-gray-500 text-xs mt-1">{{ friendship.created_at|timesince }} atrás</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col space-y-2">
+                            <a href="{% url 'ficha10:accept_friend_request' friendship.friendship_id %}" 
+                               class="px-4 py-2 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition text-center">
+                                <i class="fas fa-check mr-1"></i>Aceitar
+                            </a>
+                            <a href="{% url 'ficha10:decline_friend_request' friendship.friendship_id %}" 
+                               class="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition text-center">
+                                <i class="fas fa-times mr-1"></i>Recusar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <i class="fas fa-inbox text-5xl text-gray-300 mb-3"></i>
+                <p class="text-gray-500">Sem pedidos recebidos</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sent Requests -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-paper-plane mr-2 text-blue-600"></i>
+                Pedidos Enviados ({{ sent_requests|length }})
+            </h2>
+            
+            {% if sent_requests %}
+            <div class="space-y-4">
+                {% for friendship in sent_requests %}
+                <div class="border rounded-lg p-4 hover:shadow-md transition">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0">
+                                {% if friendship.user_id_2.profile_picture_url %}
+                                <img class="h-12 w-12 rounded-full object-cover" src="{{ friendship.user_id_2.profile_picture_url }}" alt="{{ friendship.user_id_2.username }}">
+                                {% else %}
+                                <div class="h-12 w-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                                    {{ friendship.user_id_2.username.0|upper }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <a href="{% url 'ficha10:user_profile' friendship.user_id_2.user_id %}" class="font-semibold text-gray-900 hover:text-blue-600">
+                                    {{ friendship.user_id_2.first_name }} {{ friendship.user_id_2.last_name }}
+                                </a>
+                                <p class="text-gray-600 text-sm">@{{ friendship.user_id_2.username }}</p>
+                                <p class="text-gray-500 text-xs mt-1">{{ friendship.created_at|timesince }} atrás</p>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="px-4 py-2 bg-yellow-100 text-yellow-700 text-sm rounded">
+                                <i class="fas fa-clock mr-1"></i>Pendente
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <i class="fas fa-paper-plane text-5xl text-gray-300 mb-3"></i>
+                <p class="text-gray-500">Sem pedidos enviados</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="mt-6">
+        <a href="{% url 'ficha10:friends_list' %}" class="text-blue-600 hover:text-blue-800">
+            <i class="fas fa-arrow-left mr-2"></i>Voltar para amigos
+        </a>
+    </div>
+</div>
+{% endblock %}

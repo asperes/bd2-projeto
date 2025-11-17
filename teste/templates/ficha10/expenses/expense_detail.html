@@ -1,0 +1,60 @@
+{% extends 'ficha10/base.html' %}
+{% block title %}Detalhes da Despesa{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-white rounded-lg shadow-md p-8">
+        <h1 class="text-3xl font-bold mb-2">{{ expense.title }}</h1>
+        <p class="text-gray-600 mb-6">Pago por {{ expense.paid_by_user_id.username }}</p>
+        
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <h3 class="font-semibold text-lg mb-2">Valor Total</h3>
+                <p class="text-3xl font-bold text-green-600">{{ expense.amount }} {{ expense.currency }}</p>
+            </div>
+            <div>
+                <h3 class="font-semibold text-lg mb-2">Estado</h3>
+                <p class="text-lg">{% if expense.is_settled %}<span class="text-green-600">Liquidada</span>{% else %}<span class="text-yellow-600">Pendente</span>{% endif %}</p>
+            </div>
+        </div>
+        
+        {% if expense.description %}
+        <div class="mb-6">
+            <h3 class="font-semibold text-lg mb-2">Descrição</h3>
+            <p class="text-gray-700">{{ expense.description }}</p>
+        </div>
+        {% endif %}
+        
+        {% if shares %}
+        <div class="mb-6">
+            <h3 class="font-semibold text-lg mb-4">Divisão de Despesa</h3>
+            <div class="space-y-2">
+                {% for share in shares %}
+                <div class="flex justify-between items-center border-b pb-2">
+                    <span>{{ share.user_id.username }}</span>
+                    <div class="text-right">
+                        <span class="font-semibold">{{ share.share_amount }} {{ expense.currency }}</span>
+                        {% if share.is_paid %}
+                        <span class="ml-2 text-green-600"><i class="fas fa-check-circle"></i> Pago</span>
+                        {% else %}
+                        <span class="ml-2 text-yellow-600"><i class="fas fa-clock"></i> Pendente</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="flex space-x-4">
+            {% if expense.paid_by_user_id == user %}
+            <a href="{% url 'ficha10:edit_expense' expense.expense_id %}" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                <i class="fas fa-edit mr-2"></i>Editar
+            </a>
+            {% endif %}
+            <a href="{% url 'ficha10:event_expenses' expense.event_id.event_id %}" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
+                Voltar
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

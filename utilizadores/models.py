@@ -82,3 +82,25 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         """Retorna o primeiro nome ou username"""
         return self.first_name or self.username
+    
+
+
+class Friendships(models.Model):
+    friendship_id = models.UUIDField(primary_key=True)
+    user_id_1 = models.ForeignKey('User', models.DO_NOTHING, db_column='user_id_1')
+    user_id_2 = models.ForeignKey('User', models.DO_NOTHING, db_column='user_id_2', related_name='friendships_user_id_2_set')
+    STATUS_CHOICES = [
+        ('pending', 'Pendente'),
+        ('accepted', 'Aceite'),
+        ('blocked', 'Bloqueado'),
+    ]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, blank=True, null=True)
+    initiated_by = models.ForeignKey('User', models.DO_NOTHING, db_column='initiated_by', related_name='friendships_initiated_by_set')
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'friendships'
+        unique_together = (('user_id_1', 'user_id_2'),)
+        db_table_comment = 'Manages friendship relationships between users with status tracking'

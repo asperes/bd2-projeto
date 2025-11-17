@@ -1,0 +1,51 @@
+{% extends 'ficha10/base.html' %}
+{% block title %}Feed Pessoal{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold mb-8"><i class="fas fa-stream mr-2 text-blue-600"></i>Feed Pessoal</h1>
+    
+    <div class="grid lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 space-y-4">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="font-bold text-xl mb-4">Atividades Recentes</h2>
+                {% if activities %}
+                {% for activity in activities %}
+                <div class="border-b last:border-b-0 py-4">
+                    <div class="flex items-start space-x-3">
+                        <div class="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold flex-shrink-0">
+                            {{ activity.user_id.username.0|upper }}
+                        </div>
+                        <div>
+                            <p class="text-gray-800"><span class="font-semibold">{{ activity.user_id.username }}</span> {{ activity.activity_type }} 
+                            <a href="{% url 'ficha10:event_detail' activity.event_id.event_id %}" class="text-blue-600 hover:text-blue-800">{{ activity.event_id.title }}</a></p>
+                            <p class="text-gray-500 text-sm">{{ activity.created_at|timesince }} atrás</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="text-gray-500 text-center py-8">Sem atividades recentes</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="space-y-6">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="font-bold text-lg mb-4">Eventos Sugeridos</h3>
+                {% if suggested_events %}
+                {% for event in suggested_events %}
+                <div class="mb-4 pb-4 border-b last:border-b-0">
+                    <a href="{% url 'ficha10:event_detail' event.event_id %}" class="block hover:text-blue-600">
+                        <h4 class="font-semibold">{{ event.title }}</h4>
+                        <p class="text-sm text-gray-600">{{ event.start_datetime|date:"d/m/Y" }}</p>
+                    </a>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="text-gray-500 text-sm">Sem sugestões</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

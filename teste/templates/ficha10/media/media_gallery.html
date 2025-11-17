@@ -1,0 +1,26 @@
+{% extends 'ficha10/base.html' %}
+{% block title %}Galeria de Media{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8 flex justify-between items-center">
+        <h1 class="text-3xl font-bold"><i class="fas fa-images mr-2 text-purple-600"></i>Galeria de Media - {{ event.title }}</h1>
+        <button class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+            <i class="fas fa-upload mr-2"></i>Upload Media
+        </button>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="text-center py-16">
+            <i class="fas fa-images text-6xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500">Funcionalidade de media em desenvolvimento</p>
+            <p class="text-sm text-gray-400 mt-2">Em produção, as fotos e vídeos serão armazenados no MongoDB</p>
+        </div>
+    </div>
+    
+    <div class="mt-6">
+        <a href="{% url 'ficha10:event_detail' event.event_id %}" class="text-blue-600 hover:text-blue-800">
+            <i class="fas fa-arrow-left mr-2"></i>Voltar ao evento
+        </a>
+    </div>
+</div>
+{% endblock %}

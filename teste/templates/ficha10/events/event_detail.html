@@ -1,0 +1,77 @@
+{% extends 'ficha10/base.html' %}
+{% block title %}{{ event.title }}{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+        {% if event.cover_image_url %}
+        <img src="{{ event.cover_image_url }}" class="w-full h-64 object-cover" alt="{{ event.title }}">
+        {% else %}
+        <div class="w-full h-64 bg-gradient-to-r from-blue-500 to-purple-600"></div>
+        {% endif %}
+        
+        <div class="p-8">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-900">{{ event.title }}</h1>
+                    <p class="text-gray-600 mt-2">Organizado por {{ event.host_id.username }}</p>
+                </div>
+                {% if is_host %}
+                <a href="{% url 'ficha10:edit_event' event.event_id %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <i class="fas fa-edit mr-2"></i>Editar
+                </a>
+                {% endif %}
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-6 mt-6">
+                <div>
+                    <h3 class="font-semibold text-lg mb-2"><i class="far fa-calendar mr-2"></i>Data e Hora</h3>
+                    <p class="text-gray-700">{{ event.start_datetime|date:"d/m/Y H:i" }}</p>
+                    {% if event.end_datetime %}<p class="text-gray-600 text-sm">até {{ event.end_datetime|date:"d/m/Y H:i" }}</p>{% endif %}
+                </div>
+                <div>
+                    <h3 class="font-semibold text-lg mb-2"><i class="fas fa-map-marker-alt mr-2"></i>Localização</h3>
+                    <p class="text-gray-700">{{ event.location_name|default:"Não especificado" }}</p>
+                    {% if event.location_address %}<p class="text-gray-600 text-sm">{{ event.location_address }}</p>{% endif %}
+                </div>
+            </div>
+            
+            {% if event.description %}
+            <div class="mt-6">
+                <h3 class="font-semibold text-lg mb-2">Descrição</h3>
+                <p class="text-gray-700">{{ event.description }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="font-bold text-lg mb-4"><i class="fas fa-users mr-2"></i>Participantes ({{ attendees|length }})</h3>
+            {% for attendance in attendees|slice:":5" %}
+            <div class="flex items-center space-x-2 mb-2">
+                <div class="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold">
+                    {{ attendance.invitee_id.username.0|upper }}
+                </div>
+                <span>{{ attendance.invitee_id.username }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="font-bold text-lg mb-4"><i class="fas fa-receipt mr-2"></i>Despesas</h3>
+            <a href="{% url 'ficha10:event_expenses' event.event_id %}" class="text-blue-600 hover:text-blue-800">Ver todas as despesas</a>
+            <a href="{% url 'ficha10:create_expense' event.event_id %}" class="block mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-center">
+                <i class="fas fa-plus mr-2"></i>Nova Despesa
+            </a>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="font-bold text-lg mb-4"><i class="fas fa-poll mr-2"></i>Votações</h3>
+            <a href="{% url 'ficha10:event_polls' event.event_id %}" class="text-blue-600 hover:text-blue-800">Ver votações</a>
+            <a href="{% url 'ficha10:create_poll' event.event_id %}" class="block mt-4 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 text-center">
+                <i class="fas fa-plus mr-2"></i>Nova Votação
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

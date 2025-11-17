@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'ficha10/base.html' %}
 
 {% block title %}Home - Social Event Platform{% endblock %}
 
@@ -17,15 +17,15 @@
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-2xl font-bold mb-4 text-gray-800">Ações Rápidas</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <a href="" class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg p-4 text-center transition transform hover:scale-105">
+                    <a href="{% url 'ficha10:create_event' %}" class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg p-4 text-center transition transform hover:scale-105">
                         <i class="fas fa-plus-circle text-3xl mb-2"></i>
                         <p class="font-semibold">Criar Evento</p>
                     </a>
-                    <a href="" class="bg-green-500 hover:bg-green-600 text-white rounded-lg p-4 text-center transition transform hover:scale-105">
+                    <a href="{% url 'ficha10:search_users' %}" class="bg-green-500 hover:bg-green-600 text-white rounded-lg p-4 text-center transition transform hover:scale-105">
                         <i class="fas fa-user-plus text-3xl mb-2"></i>
                         <p class="font-semibold">Adicionar Amigos</p>
                     </a>
-                    <a href="" class="bg-purple-500 hover:bg-purple-600 text-white rounded-lg p-4 text-center transition transform hover:scale-105">
+                    <a href="{% url 'ficha10:nearby_events' %}" class="bg-purple-500 hover:bg-purple-600 text-white rounded-lg p-4 text-center transition transform hover:scale-105">
                         <i class="fas fa-map-marker-alt text-3xl mb-2"></i>
                         <p class="font-semibold">Eventos Próximos</p>
                     </a>
@@ -36,7 +36,7 @@
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-bold text-gray-800">Próximos Eventos</h2>
-                    <a href="{% url 'eventos:eventos' %}" class="text-blue-600 hover:text-blue-800">
+                    <a href="{% url 'ficha10:events_list' %}" class="text-blue-600 hover:text-blue-800">
                         Ver todos <i class="fas fa-arrow-right ml-1"></i>
                     </a>
                 </div>
@@ -45,7 +45,7 @@
                 <div class="space-y-4">
                     {% for event in upcoming_events %}
                     <div class="border-l-4 border-blue-500 pl-4 py-2 hover:bg-gray-50 transition">
-                        <a href="" class="block">
+                        <a href="{% url 'ficha10:event_detail' event.event_id %}" class="block">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <h3 class="font-semibold text-lg text-gray-800">{{ event.title }}</h3>
@@ -72,7 +72,7 @@
                 <div class="text-center py-8 text-gray-500">
                     <i class="fas fa-calendar-times text-5xl mb-3 opacity-50"></i>
                     <p>Não tem eventos próximos</p>
-                    <a href="" class="text-blue-600 hover:text-blue-800 mt-2 inline-block">
+                    <a href="{% url 'ficha10:create_event' %}" class="text-blue-600 hover:text-blue-800 mt-2 inline-block">
                         Criar o meu primeiro evento
                     </a>
                 </div>
@@ -83,7 +83,7 @@
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-bold text-gray-800">Atividades Recentes</h2>
-                    <a href="" class="text-blue-600 hover:text-blue-800">
+                    <a href="{% url 'ficha10:personal_feed' %}" class="text-blue-600 hover:text-blue-800">
                         Ver feed completo <i class="fas fa-arrow-right ml-1"></i>
                     </a>
                 </div>
@@ -105,7 +105,7 @@
                             <p class="text-sm text-gray-800">
                                 <span class="font-semibold">{{ activity.user_id.username }}</span>
                                 {{ activity.activity_type }}
-                                <a href="" class="text-blue-600 hover:text-blue-800">
+                                <a href="{% url 'ficha10:event_detail' activity.event_id.event_id %}" class="text-blue-600 hover:text-blue-800">
                                     {{ activity.event_id.title }}
                                 </a>
                             </p>
@@ -137,7 +137,7 @@
                     {% endif %}
                     <h3 class="mt-4 text-xl font-semibold text-gray-800">{{ user.first_name }} {{ user.last_name }}</h3>
                     <p class="text-gray-600">@{{ user.username }}</p>
-                    <a href="" class="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    <a href="{% url 'ficha10:edit_profile' %}" class="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                         <i class="fas fa-edit mr-1"></i> Editar Perfil
                     </a>
                 </div>
@@ -147,7 +147,7 @@
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-bold text-gray-800">Pedidos de Amizade</h3>
-                    <a href="" class="text-blue-600 hover:text-blue-800 text-sm">
+                    <a href="{% url 'ficha10:friend_requests' %}" class="text-blue-600 hover:text-blue-800 text-sm">
                         Ver todos
                     </a>
                 </div>
@@ -169,10 +169,10 @@
                             </div>
                         </div>
                         <div class="flex space-x-1">
-                            <a href="" class="p-2 bg-green-500 text-white rounded hover:bg-green-600" title="Aceitar">
+                            <a href="{% url 'ficha10:accept_friend_request' friendship.friendship_id %}" class="p-2 bg-green-500 text-white rounded hover:bg-green-600" title="Aceitar">
                                 <i class="fas fa-check"></i>
                             </a>
-                            <a href="" class="p-2 bg-red-500 text-white rounded hover:bg-red-600" title="Recusar">
+                            <a href="{% url 'ficha10:decline_friend_request' friendship.friendship_id %}" class="p-2 bg-red-500 text-white rounded hover:bg-red-600" title="Recusar">
                                 <i class="fas fa-times"></i>
                             </a>
                         </div>

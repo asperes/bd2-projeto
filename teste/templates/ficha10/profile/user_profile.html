@@ -1,0 +1,56 @@
+{% extends 'ficha10/base.html' %}
+{% block title %}Perfil de {{ profile_user.username }}{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-white rounded-lg shadow-md p-8">
+        <div class="flex items-start justify-between mb-8">
+            <div class="flex items-start space-x-6">
+                {% if profile_user.profile_picture_url %}
+                <img class="h-32 w-32 rounded-full object-cover" src="{{ profile_user.profile_picture_url }}" alt="{{ profile_user.username }}">
+                {% else %}
+                <div class="h-32 w-32 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-5xl">
+                    {{ profile_user.username.0|upper }}
+                </div>
+                {% endif %}
+                <div>
+                    <h1 class="text-3xl font-bold">{{ profile_user.first_name }} {{ profile_user.last_name }}</h1>
+                    <p class="text-gray-600 text-lg">@{{ profile_user.username }}</p>
+                </div>
+            </div>
+            
+            <div>
+                {% if friendship %}
+                    {% if friendship.status == 'accepted' %}
+                    <a href="{% url 'ficha10:remove_friend' friendship.friendship_id %}" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                        <i class="fas fa-user-times mr-2"></i>Remover Amigo
+                    </a>
+                    {% elif friendship.status == 'pending' %}
+                    <span class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg">
+                        <i class="fas fa-clock mr-2"></i>Pendente
+                    </span>
+                    {% endif %}
+                {% else %}
+                <a href="{% url 'ficha10:send_friend_request' profile_user.user_id %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <i class="fas fa-user-plus mr-2"></i>Adicionar Amigo
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if profile_user.bio %}
+        <div class="mb-6">
+            <h3 class="font-semibold text-lg mb-2">Biografia</h3>
+            <p class="text-gray-700">{{ profile_user.bio }}</p>
+        </div>
+        {% endif %}
+        
+        <div class="grid md:grid-cols-2 gap-6">
+            <div>
+                <h3 class="font-semibold text-lg mb-2">Informações</h3>
+                {% if profile_user.location %}<p class="text-gray-700"><i class="fas fa-map-marker-alt mr-2"></i>{{ profile_user.location }}</p>{% endif %}
+                <p class="text-gray-700"><i class="fas fa-calendar mr-2"></i>Membro desde {{ profile_user.created_at|date:"F Y" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

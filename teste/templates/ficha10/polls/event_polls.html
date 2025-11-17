@@ -1,0 +1,37 @@
+{% extends 'ficha10/base.html' %}
+{% block title %}Votações - {{ event.title }}{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8 flex justify-between items-center">
+        <h1 class="text-3xl font-bold"><i class="fas fa-poll mr-2 text-purple-600"></i>Votações - {{ event.title }}</h1>
+        <a href="{% url 'ficha10:create_poll' event.event_id %}" class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+            <i class="fas fa-plus mr-2"></i>Nova Votação
+        </a>
+    </div>
+    
+    <div class="space-y-4">
+        {% if polls %}
+        {% for poll in polls %}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="font-semibold text-xl mb-2">{{ poll.question }}</h3>
+            <p class="text-gray-600 text-sm mb-4">Tipo: {{ poll.get_poll_type_display }} • Criado por {{ poll.created_by_user_id.username }}</p>
+            <a href="{% url 'ficha10:poll_detail' poll.poll_id %}" class="text-purple-600 hover:text-purple-800">
+                Ver votação e resultados <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="bg-white rounded-lg shadow-md text-center py-16">
+            <i class="fas fa-poll text-6xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500">Sem votações criadas</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="mt-6">
+        <a href="{% url 'ficha10:event_detail' event.event_id %}" class="text-blue-600 hover:text-blue-800">
+            <i class="fas fa-arrow-left mr-2"></i>Voltar ao evento
+        </a>
+    </div>
+</div>
+{% endblock %}
