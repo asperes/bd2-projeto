@@ -5,10 +5,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.db import models
 
-from .models import User,Friendships
+from .models import User,Friendships,v_user_friends
 
 
-from .forms import CriarUtilizador
+from .forms import CriarUtilizador, EditarPerfilForm
 
 
 
@@ -59,8 +59,21 @@ def perfil(request):
     return render(request,'perfil/perfil.html',{'user': request.user})
 
 def editar_perfil(request):
-    pass
-    return render(request,'perfil/editar_perfil.html',{})
+    if not request.user.is_authenticated:
+        return redirect('utilizadores:login_user')
+
+    if request.method == "POST":
+        form = EditarPerfilForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Perfil atualizado com sucesso.")
+            return redirect('utilizadores:perfil')
+        else:
+            messages.error(request, "Erro ao atualizar o perfil.")
+    else:
+        form = EditarPerfilForm(instance=request.user)
+
+    return render(request,'perfil/editar_perfil.html',{'form': form})
 
 def ver_perfil(request, user_id):
     utilizador = User.objects.get(user_id=user_id)
@@ -82,11 +95,13 @@ def pesquisar_users(request):
     return render(request, 'amizades/pesquisar_users.html', context)
 
 def enviar_pedido(request, user_id):
-    if request.user.user_id == user_id:
-        messages.error(request, "Não pode enviar um pedido de amizade a si próprio.")
-        return redirect('utilizadores:pesquisar_users')
     if user_id is not None:
+        # Garante que user_adicionado não é o próprio utilizador
         user_adicionado = User.objects.get(user_id=user_id)
+        
+        if user_adicionado == request.user:
+            messages.error(request, "Não podes enviar pedido de amizade a ti próprio.")
+            return redirect('utilizadores:pesquisar_users')
         jaexiste = Friendships.objects.filter(
             models.Q(user_id_1=request.user, user_id_2=user_adicionado) |
             models.Q(user_id_1=user_adicionado, user_id_2=request.user)
@@ -95,6 +110,7 @@ def enviar_pedido(request, user_id):
             messages.info(request, f"Já existe uma amizade ou pedido de amizade com {user_adicionado.first_name} {user_adicionado.last_name}.")
             return redirect('utilizadores:pesquisar_users')
         else:
+            print( "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", user_adicionado)
             Friendships.objects.create(
                 friendship_id=uuid.uuid4(),
                 user_id_1=request.user,
@@ -105,9 +121,45 @@ def enviar_pedido(request, user_id):
             messages.success(request, f"Pedido de amizade enviado para {user_adicionado.first_name} {user_adicionado.last_name}.")
     return redirect('utilizadores:pesquisar_users')
 
+def ver_pedidos(request):
+    pedidos_recebidos = Friendships.objects.filter(
+        ~models.Q(initiated_by=request.user),
+        models.Q(user_id_1=request.user) | models.Q( user_id_2=request.user),
+        status='pending'
+    )
+    pedidos_enviados = Friendships.objects.filter(
+        initiated_by=request.user,
+        status='pending'
+    )
+    context = {
+        'received_requests': pedidos_recebidos,
+        'sent_requests': pedidos_enviados,
+    }
+    return render(request, 'amizades/ver_pedidos.html', context)
+
+def aceitar_pedido(request, friendship_id):
+    friendship = Friendships.objects.get(friendship_id=friendship_id)
+    friendship.status = 'accepted'
+    friendship.save()
+    messages.success(request, f"Pedido de amizade de {friendship.user_id_1.first_name} {friendship.user_id_1.last_name} aceite.")
+    return redirect('utilizadores:ver_pedidos')
+
+def recusar_pedido(request, friendship_id):
+    friendship = Friendships.objects.get(friendship_id=friendship_id)
+    friendship.delete()
+    messages.success(request, f"Pedido de amizade de {friendship.user_id_1.first_name} {friendship.user_id_1.last_name} recusado.")
+    return redirect('utilizadores:ver_pedidos')
+
+def ver_amizades(request):
+    amizades = v_user_friends.objects.filter(user=request.user)                     #alterar pois está errado
+    return render(request, 'amizades/ver_amizades.html', {'amizades': amizades})
+
 def remove_friend(request, friendship_id):
-    pass
+    friendship = Friendships.objects.get(friendship_id=friendship_id)
+    friendship.delete()
+    messages.success(request, "Amizade removida com sucesso.")
     return redirect('utilizadores:perfil')
+
 
 
 

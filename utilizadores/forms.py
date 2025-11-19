@@ -42,7 +42,44 @@ class CriarUtilizador(UserCreationForm):    #UserCreationForm pois ja tem alguns
             'placeholder': 'Confirmar senha'
         })
 
-class LoginForm(forms.Form):
-    username = forms.CharField(label='Username', max_length=50)
-    password = forms.CharField(label='Password', widget=forms.PasswordInput)
+# class LoginForm(forms.Form):
+#     username = forms.CharField(label='Username', max_length=50)
+#     password = forms.CharField(label='Password', widget=forms.PasswordInput)
+
+
+class EditarPerfilForm(forms.ModelForm):
+    pass
+    class Meta:
+        model = User
+        fields = ['username', 'bio','profile_picture_url','date_of_birth','location']
+        widgets = {
+            'username': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                'placeholder': 'Username'
+            }),
+            'bio': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                'placeholder': 'Bio',
+                'rows': 4
+            }),
+            'profile_picture_url': forms.URLInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                'placeholder': 'URL da foto de perfil'
+            }),
+            'date_of_birth': forms.DateInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                'placeholder': 'Data de nascimento',
+                'type': 'date'
+            }),
+            'location': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                'placeholder': 'Localização'
+            }),
+        }
+
+
+
+
+    
+
 

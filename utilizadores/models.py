@@ -104,3 +104,20 @@ class Friendships(models.Model):
         db_table = 'friendships'
         unique_together = (('user_id_1', 'user_id_2'),)
         db_table_comment = 'Manages friendship relationships between users with status tracking'
+
+
+
+class v_user_friends(models.Model):
+    friendship_id = models.UUIDField(primary_key=True)
+    user = models.ForeignKey('User', models.DO_NOTHING, db_column='user_id', related_name='user_friends')
+    friend = models.ForeignKey('User', models.DO_NOTHING, db_column='friend_id', related_name='friend_friends')
+    friend_username = models.CharField(max_length=50)
+    friend_first_name = models.CharField(max_length=100, blank=True, null=True)
+    friend_last_name = models.CharField(max_length=100, blank=True, null=True)
+    status = models.CharField(max_length=10)
+    friends_since = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'v_user_friends'
+        db_table_comment = 'Simplified view of user friendships'

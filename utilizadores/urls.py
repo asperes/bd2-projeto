@@ -15,4 +15,9 @@ urlpatterns = [
     path('pesquisar_users/', views.pesquisar_users, name='pesquisar_users'),
     path('enviar_pedido/<uuid:user_id>/', views.enviar_pedido, name='enviar_pedido'),
     path('remove_friend/<uuid:friendship_id>/', views.remove_friend, name='remove_friend'),
+    path('ver_amizades/', views.ver_amizades, name='ver_amizades'),
+    path('ver_pedidos/', views.ver_pedidos, name='ver_pedidos'),
+    path('aceitar_pedido/<uuid:friendship_id>/', views.aceitar_pedido, name='aceitar_pedido'),
+    path('recusar_pedido/<uuid:friendship_id>/', views.recusar_pedido, name='recusar_pedido'),
+    
 ]

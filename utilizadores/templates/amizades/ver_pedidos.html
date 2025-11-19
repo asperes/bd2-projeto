@@ -1,4 +1,4 @@
-{% extends 'ficha10/base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Pedidos de Amizade - Social Event Platform{% endblock %}
 
@@ -9,7 +9,6 @@
             <i class="fas fa-user-plus mr-2 text-blue-600"></i>
             Pedidos de Amizade
         </h1>
-        <p class="mt-2 text-gray-600">Gerencie os seus pedidos de amizade</p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -36,7 +35,7 @@
                                 {% endif %}
                             </div>
                             <div>
-                                <a href="{% url 'ficha10:user_profile' friendship.user_id_1.user_id %}" class="font-semibold text-gray-900 hover:text-blue-600">
+                                <a href="{% url 'utilizadores:ver_perfil' friendship.user_id_1.user_id %}" class="font-semibold text-gray-900 hover:text-blue-600">
                                     {{ friendship.user_id_1.first_name }} {{ friendship.user_id_1.last_name }}
                                 </a>
                                 <p class="text-gray-600 text-sm">@{{ friendship.user_id_1.username }}</p>
@@ -44,11 +43,11 @@
                             </div>
                         </div>
                         <div class="flex flex-col space-y-2">
-                            <a href="{% url 'ficha10:accept_friend_request' friendship.friendship_id %}" 
+                            <a href="{% url 'utilizadores:aceitar_pedido' friendship.friendship_id %}" 
                                class="px-4 py-2 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition text-center">
                                 <i class="fas fa-check mr-1"></i>Aceitar
                             </a>
-                            <a href="{% url 'ficha10:decline_friend_request' friendship.friendship_id %}" 
+                            <a href="{% url 'utilizadores:recusar_pedido' friendship.friendship_id %}" 
                                class="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition text-center">
                                 <i class="fas fa-times mr-1"></i>Recusar
                             </a>
@@ -79,19 +78,56 @@
                     <div class="flex items-start justify-between">
                         <div class="flex items-start space-x-3">
                             <div class="flex-shrink-0">
-                                {% if friendship.user_id_2.profile_picture_url %}
-                                <img class="h-12 w-12 rounded-full object-cover" src="{{ friendship.user_id_2.profile_picture_url }}" alt="{{ friendship.user_id_2.username }}">
+                                {% if friendship.initiated_by == request.user %}
+                                    {% if friendship.user_id_1 == request.user %}
+                                        {% if friendship.user_id_2.profile_picture_url %}
+                                        <img class="h-12 w-12 rounded-full object-cover" src="{{ friendship.user_id_2.profile_picture_url }}" alt="{{ friendship.user_id_2.username }}">
+                                        {% else %}
+                                        <div class="h-12 w-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                                            {{ friendship.user_id_2.username.0|upper }}
+                                        </div>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if friendship.user_id_1.profile_picture_url %}
+                                        <img class="h-12 w-12 rounded-full object-cover" src="{{ friendship.user_id_1.profile_picture_url }}" alt="{{ friendship.user_id_1.username }}">
+                                        {% else %}
+                                        <div class="h-12 w-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                                            {{ friendship.user_id_1.username.0|upper }}
+                                        </div>
+                                        {% endif %}
+                                    {% endif %}
                                 {% else %}
-                                <div class="h-12 w-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-                                    {{ friendship.user_id_2.username.0|upper }}
-                                </div>
+                                    {% if friendship.user_id_1 == request.user %}
+                                        {% if friendship.user_id_2.profile_picture_url %}
+                                        <img class="h-12 w-12 rounded-full object-cover" src="{{ friendship.user_id_2.profile_picture_url }}" alt="{{ friendship.user_id_2.username }}">
+                                        {% else %}
+                                        <div class="h-12 w-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                                            {{ friendship.user_id_2.username.0|upper }}
+                                        </div>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if friendship.user_id_1.profile_picture_url %}
+                                        <img class="h-12 w-12 rounded-full object-cover" src="{{ friendship.user_id_1.profile_picture_url }}" alt="{{ friendship.user_id_1.username }}">
+                                        {% else %}
+                                        <div class="h-12 w-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                                            {{ friendship.user_id_1.username.0|upper }}
+                                        </div>
+                                        {% endif %}
+                                    {% endif %}
                                 {% endif %}
                             </div>
                             <div>
-                                <a href="{% url 'ficha10:user_profile' friendship.user_id_2.user_id %}" class="font-semibold text-gray-900 hover:text-blue-600">
-                                    {{ friendship.user_id_2.first_name }} {{ friendship.user_id_2.last_name }}
-                                </a>
-                                <p class="text-gray-600 text-sm">@{{ friendship.user_id_2.username }}</p>
+                                {% if friendship.user_id_1 == request.user %}
+                                    <a href="{% url 'utilizadores:ver_perfil' friendship.user_id_2.user_id %}" class="font-semibold text-gray-900 hover:text-blue-600">
+                                        {{ friendship.user_id_2.first_name }} {{ friendship.user_id_2.last_name }}
+                                    </a>
+                                    <p class="text-gray-600 text-sm">@{{ friendship.user_id_2.username }}</p>
+                                {% else %}
+                                    <a href="{% url 'utilizadores:ver_perfil' friendship.user_id_1.user_id %}" class="font-semibold text-gray-900 hover:text-blue-600">
+                                        {{ friendship.user_id_1.first_name }} {{ friendship.user_id_1.last_name }}
+                                    </a>
+                                    <p class="text-gray-600 text-sm">@{{ friendship.user_id_1.username }}</p>
+                                {% endif %}
                                 <p class="text-gray-500 text-xs mt-1">{{ friendship.created_at|timesince }} atrás</p>
                             </div>
                         </div>
@@ -115,7 +151,7 @@
 
     <!-- Back Button -->
     <div class="mt-6">
-        <a href="{% url 'ficha10:friends_list' %}" class="text-blue-600 hover:text-blue-800">
+        <a href="{% url 'utilizadores:ver_amizades' %}" class="text-blue-600 hover:text-blue-800">
             <i class="fas fa-arrow-left mr-2"></i>Voltar para amigos
         </a>
     </div>
