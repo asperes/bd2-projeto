@@ -71,18 +71,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         db_table = 'users'
         managed = True  # Django não vai criar/alterar esta tabela
     
-    def __str__(self):
-        return self.username
-    
-    def get_full_name(self):
-        if self.first_name and self.last_name:
-            return f"{self.first_name} {self.last_name}".strip()
-        return self.username
-    
-    def get_short_name(self):
-        """Retorna o primeiro nome ou username"""
-        return self.first_name or self.username
-    
 
 
 class Friendships(models.Model):

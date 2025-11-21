@@ -13,13 +13,33 @@
             <div class="flex justify-between items-start mb-4">
                 <div>
                     <h1 class="text-4xl font-bold text-gray-900">{{ event.title }}</h1>
-                    <p class="text-gray-600 mt-2">Organizado por {{ event.host_id.username }}</p>
+                    <p class="text-gray-600 mt-2">Organizado por {{ event.host.username }}</p>
                 </div>
-                {% if is_host %}
-                <a href="" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    <i class="fas fa-edit mr-2"></i>Editar
-                </a>
-                {% endif %}
+                <div class="flex gap-2">
+                    {% if is_host %}
+                    <a href="" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        <i class="fas fa-edit mr-2"></i>Editar
+                    </a>
+                    {% elif event.is_public and not is_participating and not has_pending_invitation %}
+                    <form method="post" action="{% url 'eventos:participar_evento' event.event_id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                            <i class="fas fa-check mr-2"></i>Participar
+                        </button>
+                    </form>
+                    {% elif is_participating %}
+                    <span class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg">
+                        <i class="fas fa-check-circle mr-2"></i>Participando
+                    </span>
+                    {% elif has_pending_invitation %}
+                    <form method="post" action="{% url 'eventos:participar_evento' event.event_id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700">
+                            <i class="fas fa-envelope mr-2"></i>Aceitar Convite
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
             </div>
             
             <div class="grid md:grid-cols-2 gap-6 mt-6">
@@ -46,13 +66,20 @@
     
     <div class="grid md:grid-cols-3 gap-6">
         <div class="bg-white rounded-lg shadow-md p-6">
-            <h3 class="font-bold text-lg mb-4"><i class="fas fa-users mr-2"></i>Participantes ({{ attendees|length }})</h3>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-lg"><i class="fas fa-users mr-2"></i>Participantes ({{ attendees|length }})</h3>
+                {% if is_host %}
+                <a href="{% url 'eventos:convidar_pessoas' event.event_id %}" class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+                    <i class="fas fa-user-plus mr-1"></i>Convidar
+                </a>
+                {% endif %}
+            </div>
             {% for attendance in attendees|slice:":5" %}
             <div class="flex items-center space-x-2 mb-2">
                 <div class="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold">
-                    {{ attendance.invitee_id.username.0|upper }}
+                    {{ attendance.invitee.username.0|upper }}
                 </div>
-                <span>{{ attendance.invitee_id.username }}</span>
+                <span>{{ attendance.invitee.username }}</span>
             </div>
             {% endfor %}
         </div>

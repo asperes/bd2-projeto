@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block title %}Convidar Pessoas - {{ event.title }}{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-lg shadow-md p-8">
+        <div class="mb-6">
+            <a href="{% url 'eventos:ver_evento' event.event_id %}" class="text-blue-600 hover:text-blue-800">
+                <i class="fas fa-arrow-left mr-2"></i>Voltar ao evento
+            </a>
+        </div>
+        
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Convidar Pessoas</h1>
+        <p class="text-gray-600 mb-6">{{ event.title }}</p>
+        
+        <form method="post" id="inviteForm">
+            {% csrf_token %}
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Função</label>
+                <select name="role" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="attendee">Participante</option>
+                    <option value="organizer">Organizador</option>
+                </select>
+            </div>
+            
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="block text-sm font-medium text-gray-700">Selecionar Pessoas</label>
+                    <button type="button" onclick="toggleSelectAll()" class="text-sm text-blue-600 hover:text-blue-800">
+                        Selecionar todos
+                    </button>
+                </div>
+                
+                <div class="mb-4">
+                    <input type="text" id="searchInput" placeholder="Buscar por nome ou username..." 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           onkeyup="filterUsers()">
+                </div>
+                
+                <div class="border border-gray-300 rounded-lg max-h-96 overflow-y-auto divide-y divide-gray-200">
+                    {% if utilizadores_disponiveis %}
+                        {% for utilizador in utilizadores_disponiveis %}
+                        <label class="flex items-center p-4 hover:bg-gray-50 cursor-pointer user-item">
+                            <input type="checkbox" name="invitees" value="{{ utilizador.user_id }}" 
+                                   class="h-5 w-5 text-blue-600 rounded focus:ring-blue-500 user-checkbox">
+                            <div class="ml-4 flex items-center">
+                                <div class="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                                    {{ utilizador.username.0|upper }}
+                                </div>
+                                <div class="ml-3">
+                                    <p class="font-medium text-gray-900 user-name">{{ utilizador.first_name }} {{ utilizador.last_name }}</p>
+                                    <p class="text-sm text-gray-600 user-username">@{{ utilizador.username }}</p>
+                                </div>
+                            </div>
+                        </label>
+                        {% endfor %}
+                    {% else %}
+                        <div class="p-8 text-center text-gray-500">
+                            <i class="fas fa-users text-4xl mb-3"></i>
+                            <p>Não há mais usuários disponíveis para convidar</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="flex justify-between items-center">
+                <span id="selectedCount" class="text-sm text-gray-600">0 pessoa(s) selecionada(s)</span>
+                <div class="space-x-3">
+                    <a href="{% url 'eventos:ver_evento' event.event_id %}" 
+                       class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                        Cancelar
+                    </a>
+                    <button type="submit" 
+                            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                            id="submitBtn" disabled>
+                        <i class="fas fa-paper-plane mr-2"></i>Enviar Convites
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+let allSelected = false;
+
+function updateSelectedCount() {
+    const checkboxes = document.querySelectorAll('.user-checkbox:checked');
+    const count = checkboxes.length;
+    document.getElementById('selectedCount').textContent = `${count} pessoa(s) selecionada(s)`;
+    document.getElementById('submitBtn').disabled = count === 0;
+}
+
+function toggleSelectAll() {
+    allSelected = !allSelected;
+    const checkboxes = document.querySelectorAll('.user-checkbox');
+    const visibleCheckboxes = Array.from(checkboxes).filter(cb => {
+        return cb.closest('.user-item').style.display !== 'none';
+    });
+    
+    visibleCheckboxes.forEach(checkbox => {
+        checkbox.checked = allSelected;
+    });
+    
+    updateSelectedCount();
+    event.target.textContent = allSelected ? 'Desselecionar todos' : 'Selecionar todos';
+}
+
+function filterUsers() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const userItems = document.querySelectorAll('.user-item');
+    
+    userItems.forEach(item => {
+        const name = item.querySelector('.user-name').textContent.toLowerCase();
+        const username = item.querySelector('.user-username').textContent.toLowerCase();
+        
+        if (name.includes(searchTerm) || username.includes(searchTerm)) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+document.querySelectorAll('.user-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', updateSelectedCount);
+});
+</script>
+{% endblock %}

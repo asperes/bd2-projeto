@@ -17,6 +17,14 @@ class CriarUtilizador(UserCreationForm):    #UserCreationForm pois ja tem alguns
     class Meta:
         model = User
         fields = ['username','email','first_name','last_name','password1','password2']
+        labels = {
+            'username': 'Nome de Utilizador',
+            'email': 'Email',
+            'first_name': 'Primeiro Nome',
+            'last_name': 'Último Nome',
+            'password1': 'Palavra-passe',
+            'password2': 'Confirmação da Palavra-passe'
+        }
         widgets = {
             'username': forms.TextInput(attrs={
                 'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
@@ -52,6 +60,13 @@ class EditarPerfilForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'bio','profile_picture_url','date_of_birth','location']
+        labels = {
+            'username': 'Nome de Utilizador',
+            'bio': 'Biografia',
+            'profile_picture_url': 'URL da Foto de Perfil',
+            'date_of_birth': 'Data de Nascimento',
+            'location': 'Localização'
+        }
         widgets = {
             'username': forms.TextInput(attrs={
                 'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',

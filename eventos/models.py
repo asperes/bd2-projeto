@@ -137,7 +137,13 @@ class Events(models.Model):
     recurrence_rule = models.JSONField(blank=True, null=True, db_comment='JSON object following iCalendar RRULE format for recurring events')
     cover_image_url = models.CharField(max_length=500, blank=True, null=True)
     category = models.CharField(max_length=50, blank=True, null=True)
-    status = models.TextField(blank=True, null=True)  # This field type is a guess.
+    EVENT_STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('cancelled', 'Cancelled'),
+        ('completed', 'Completed'),
+    ]
+    status = models.CharField(max_length=10, choices=EVENT_STATUS_CHOICES, blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
     settings = models.JSONField(blank=True, null=True)

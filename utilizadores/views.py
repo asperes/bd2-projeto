@@ -110,7 +110,6 @@ def enviar_pedido(request, user_id):
             messages.info(request, f"Já existe uma amizade ou pedido de amizade com {user_adicionado.first_name} {user_adicionado.last_name}.")
             return redirect('utilizadores:pesquisar_users')
         else:
-            print( "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", user_adicionado)
             Friendships.objects.create(
                 friendship_id=uuid.uuid4(),
                 user_id_1=request.user,
@@ -135,6 +134,7 @@ def ver_pedidos(request):
         'received_requests': pedidos_recebidos,
         'sent_requests': pedidos_enviados,
     }
+    print(pedidos_recebidos)
     return render(request, 'amizades/ver_pedidos.html', context)
 
 def aceitar_pedido(request, friendship_id):
